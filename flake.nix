@@ -74,6 +74,18 @@
               cleanup = "none";
             };
           };
+
+          # ファイルの関連付け用に duti をインストール
+          environment.systemPackages = [ pkgs.duti ];
+
+          # .md のデフォルトアプリを VS Code にする
+          # 変更時は macOS の確認ダイアログが出るため、すでに設定済みならスキップする
+          system.activationScripts.postActivation.text = ''
+            if [ "$(sudo -u ${config.system.primaryUser} ${pkgs.duti}/bin/duti -d net.daringfireball.markdown 2>/dev/null)" != "com.microsoft.VSCode" ]; then
+              echo "Setting default app for Markdown..."
+              sudo -u ${config.system.primaryUser} ${pkgs.duti}/bin/duti -s com.microsoft.VSCode net.daringfireball.markdown all
+            fi
+          '';
         })
       ];
     };
