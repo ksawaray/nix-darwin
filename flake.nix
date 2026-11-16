@@ -16,28 +16,28 @@
       modules = [ 
         nix-homebrew.darwinModules.nix-homebrew
         ({ pkgs, config, ... }: {
-          # Nix 本体の管理をオフにする
+          # Disable Nix self-management
           nix.enable = false;
 
-          # ユーザ名の設定
+          # Set username
           system.primaryUser = "sawara";
 
-          # ホスト名の設定
+          # Set hostname
           networking.hostName = "sawara-macbook";
           networking.computerName = "sawara-macbook";
           networking.localHostName = "sawara-macbook";
 
-          # アーキテクチャの指定
-          nixpkgs.hostPlatform = "aarch64-darwin"; # Apple Siliconの場合
+          # Specify architecture
+          nixpkgs.hostPlatform = "aarch64-darwin"; # For Apple Silicon
 
-          # 基本設定
+          # Basic settings
           #nix.settings.experimental-features = "nix-command flakes";
           system.stateVersion = 6;
 
-          # システムの設定
-          #system.defaults.dock.autohide = true; # Dock を隠す
+          # System settings
+          #system.defaults.dock.autohide = true; # Hide the Dock
 
-          # Homebrew 本体の管理
+          # Manage Homebrew itself
           nix-homebrew = {
             enable = true;
             user = "sawara";
@@ -50,16 +50,16 @@
             autoMigrate = true;
           };
 
-          # brew でのパッケージインストール
+          # Install packages via brew
           homebrew = {
             enable = true;
             taps = builtins.attrNames config.nix-homebrew.taps;
             brews = [
             ];
-            # 手動インストールが必要なアプリ（nixで管理不可）:
+            # Apps that require manual installation (not manageable via nix):
             # - Muse from Meta: https://ai.meta.com/muse/download/
-            #   理由: ダウンロードにMetaアカウント認証が必要（signed URL）
-            #   App Store ID: 6760173601 だがmacOS版は未提供
+            #   Reason: Download requires Meta account authentication (signed URL)
+            #   App Store ID: 6760173601 but no macOS version is available
             casks = [
               "google-chrome"
               "karabiner-elements"
@@ -79,11 +79,11 @@
             };
           };
 
-          # ファイルの関連付け用に duti をインストール
+          # Install duti for file association
           environment.systemPackages = [ pkgs.duti ];
 
-          # .md のデフォルトアプリを VS Code にする
-          # 変更時は macOS の確認ダイアログが出るため、すでに設定済みならスキップする
+          # Set VS Code as the default app for .md files
+          # Skip if already configured, as macOS shows a confirmation dialog on change
           system.activationScripts.postActivation.text = ''
             if [ "$(sudo -u ${config.system.primaryUser} ${pkgs.duti}/bin/duti -d net.daringfireball.markdown 2>/dev/null)" != "com.microsoft.VSCode" ]; then
               echo "Setting default app for Markdown..."
