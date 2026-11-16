@@ -56,6 +56,10 @@
             taps = builtins.attrNames config.nix-homebrew.taps;
             brews = [
             ];
+            # 手動インストールが必要なアプリ（nixで管理不可）:
+            # - Muse from Meta: https://ai.meta.com/muse/download/
+            #   理由: ダウンロードにMetaアカウント認証が必要（signed URL）
+            #   App Store ID: 6760173601 だがmacOS版は未提供
             casks = [
               "google-chrome"
               "karabiner-elements"
